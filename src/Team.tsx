@@ -134,7 +134,7 @@ export function SingleTeamCard({ teamName, rows }: SingleTeamCardProps) {
       <div style={headerFlexStyle}>
         <h3 style={titleStyle}>{teamName}</h3>
         <span style={squadCountBadgeStyle(currentPlayerCount >= MIN_PLAYERS)}>
-          Squad: {currentPlayerCount} / {MIN_PLAYERS}
+          Squad: {currentPlayerCount}/9
         </span>
       </div>
 
