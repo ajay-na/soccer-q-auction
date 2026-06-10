@@ -2,8 +2,10 @@ import type { CSSProperties } from 'react';
 import { AvailablePlayers } from './AvailablePlayers';
 import GoogleSheetFetcher from './GoogleSheetFetcher';
 import SingleTeamCard from './Team';
+import { ThemeToggle, useTheme } from './theme/ThemeContext';
 
 function App() {
+  const { colors } = useTheme();
   const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
   const SHEET_ID = import.meta.env.VITE_SPREADSHEET_ID;
 
@@ -14,62 +16,181 @@ function App() {
     { name: "Team Abishek & Mahith", range: "Sheet1!I22:N41" }
   ];
 
+  const appContainerStyle: CSSProperties = {
+    padding: '40px 16px',
+    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    backgroundColor: colors.bgApp,
+    minHeight: '100vh',
+    color: colors.textPrimary,
+    boxSizing: 'border-box',
+    transition: 'background-color 0.2s ease, color 0.2s ease',
+  };
+
+  const headerStyle: CSSProperties = {
+    textAlign: 'center',
+    marginBottom: '36px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    position: 'relative',
+  };
+
+  const headerTopRowStyle: CSSProperties = {
+    width: '100%',
+    maxWidth: '1300px',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginBottom: '8px',
+  };
+
+  const badgeLiveStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    backgroundColor: colors.badgeLiveBg,
+    color: colors.badgeLiveColor,
+    fontSize: '11px',
+    fontWeight: '700',
+    padding: '4px 10px',
+    borderRadius: '20px',
+    letterSpacing: '0.05em',
+    marginBottom: '12px',
+    border: `1px solid ${colors.badgeLiveBorder}`,
+  };
+
+  const dotStyle = {
+    width: '6px',
+    height: '6px',
+    backgroundColor: colors.dotLive,
+    borderRadius: '50%',
+    display: 'inline-block',
+  };
+
+  const titleStyle = {
+    color: colors.title,
+    margin: '0 0 6px 0',
+    fontSize: '34px',
+    fontWeight: '800',
+    letterSpacing: '-0.03em',
+  };
+
+  const mainLayoutStackStyle: CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '32px',
+    maxWidth: '1300px',
+    margin: '0 auto',
+    width: '100%',
+  };
+
+  const sectionStyle: CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+    width: '100%',
+  };
+
+  const sectionTitleStyle = {
+    margin: 0,
+    color: colors.textPrimary,
+    fontSize: '22px',
+    fontWeight: '700',
+    letterSpacing: '-0.02em',
+    borderLeft: `4px solid ${colors.accent}`,
+    paddingLeft: '12px',
+  };
+
+  const dividerStyle = {
+    border: '0',
+    height: '1px',
+    backgroundColor: colors.divider,
+    margin: '12px 0',
+  };
+
+  const poolHeaderFlexStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '10px',
+    flexWrap: 'wrap' as const,
+  };
+
+  const poolNoticeStyle = {
+    fontSize: '12px',
+    fontWeight: '600',
+    backgroundColor: colors.poolNoticeBg,
+    color: colors.poolNoticeColor,
+    padding: '4px 12px',
+    borderRadius: '6px',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.05em',
+    whiteSpace: 'nowrap' as const,
+  };
+
+  const poolWrapperStyle: CSSProperties = {
+    backgroundColor: colors.poolWrapperBg,
+    borderRadius: '16px',
+    border: `1px solid ${colors.poolWrapperBorder}`,
+    boxShadow: colors.poolWrapperShadow,
+    padding: '6px',
+    overflow: 'hidden',
+    width: '100%',
+    boxSizing: 'border-box',
+    transition: 'background-color 0.2s ease, border-color 0.2s ease',
+  };
+
   return (
     <div style={appContainerStyle}>
-      {/* 🚀 Header Section */}
       <header style={headerStyle}>
+        <div style={headerTopRowStyle}>
+          <ThemeToggle />
+        </div>
         <div style={badgeLiveStyle}>
           <span style={dotStyle}></span> LIVE UPDATES
         </div>
         <h1 style={titleStyle}>LIVE AUCTION BOARD</h1>
       </header>
 
-      {/* 🎛️ Stacking Dashboard Layout */}
       <div style={mainLayoutStackStyle}>
-        
-        {/* 👥 TOP SECTION: Team Squads Grid (Strict 2x2 on Desktop -> 1 Column Stack on Mobile) */}
         <div style={sectionStyle}>
           <h2 style={sectionTitleStyle}>👥 Team Squads Status</h2>
-          
-          {/* ⚡ Injecting media queries via a dynamic style block to lock the 2x2 grid layout */}
+
           <style>{`
             .teams-grid-container {
               display: grid;
-              grid-template-columns: 1fr; /* Default to single column vertical stack on mobile */
+              grid-template-columns: 1fr;
               gap: 24px;
               width: 100%;
               box-sizing: border-box;
             }
             @media (min-width: 768px) {
               .teams-grid-container {
-                grid-template-columns: 1fr 1fr; /* Locks strictly into a 2x2 grid layout on tablet/desktop */
+                grid-template-columns: 1fr 1fr;
               }
             }
           `}</style>
 
           <div className="teams-grid-container">
             {teamsConfig.map((team, index) => (
-              <GoogleSheetFetcher 
+              <GoogleSheetFetcher
                 key={index}
-                apiKey={API_KEY} 
-                spreadsheetId={SHEET_ID} 
-                range={team.range} 
+                apiKey={API_KEY}
+                spreadsheetId={SHEET_ID}
+                range={team.range}
               >
                 {(teamData) => (
-                  <SingleTeamCard 
-                    teamName={team.name} 
-                    rows={teamData} 
+                  <SingleTeamCard
+                    teamName={team.name}
+                    rows={teamData}
                   />
                 )}
               </GoogleSheetFetcher>
             ))}
           </div>
         </div>
-        
-        {/* 📋 SEPARATOR RULE */}
+
         <hr style={dividerStyle} />
 
-        {/* 🏏 BOTTOM SECTION: Available Master Pool (Full Width) */}
         <div style={sectionStyle}>
           <div style={poolHeaderFlexStyle}>
             <h2 style={sectionTitleStyle}>📋 Available Player Pool</h2>
@@ -81,124 +202,9 @@ function App() {
             </GoogleSheetFetcher>
           </div>
         </div>
-
       </div>
     </div>
   );
 }
-
-// 🎨 CORE THEME DESIGN STYLES
-
-const appContainerStyle: CSSProperties = {
-  padding: '40px 16px', 
-  fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-  backgroundColor: '#f8fafc', 
-  minHeight: '100vh',
-  color: '#0f172a',
-  boxSizing: 'border-box' 
-};
-
-const headerStyle: CSSProperties = {
-  textAlign: 'center',
-  marginBottom: '36px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center'
-};
-
-const badgeLiveStyle = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '6px',
-  backgroundColor: '#fee2e2',
-  color: '#ef4444',
-  fontSize: '11px',
-  fontWeight: '700',
-  padding: '4px 10px',
-  borderRadius: '20px',
-  letterSpacing: '0.05em',
-  marginBottom: '12px',
-  border: '1px solid #fca5a5'
-};
-
-const dotStyle = {
-  width: '6px',
-  height: '6px',
-  backgroundColor: '#ef4444',
-  borderRadius: '50%',
-  display: 'inline-block'
-};
-
-const titleStyle = {
-  color: '#1e3a8a', 
-  margin: '0 0 6px 0',
-  fontSize: '34px',
-  fontWeight: '800',
-  letterSpacing: '-0.03em'
-};
-
-// Vertical Layout Stack Wrapper
-const mainLayoutStackStyle: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '32px',
-  maxWidth: '1300px',
-  margin: '0 auto',
-  width: '100%'
-};
-
-const sectionStyle: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '20px',
-  width: '100%'
-};
-
-const sectionTitleStyle = {
-  margin: 0,
-  color: '#0f172a',
-  fontSize: '22px',
-  fontWeight: '700',
-  letterSpacing: '-0.02em',
-  borderLeft: '4px solid #3b82f6',
-  paddingLeft: '12px'
-};
-
-const dividerStyle = {
-  border: '0',
-  height: '1px',
-  backgroundColor: '#e2e8f0',
-  margin: '12px 0'
-};
-
-const poolHeaderFlexStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  gap: '10px'
-};
-
-const poolNoticeStyle = {
-  fontSize: '12px',
-  fontWeight: '600',
-  backgroundColor: '#e0f2fe',
-  color: '#0369a1',
-  padding: '4px 12px',
-  borderRadius: '6px',
-  textTransform: 'uppercase',
-  letterSpacing: '0.05em',
-  whiteSpace: 'nowrap'
-};
-
-const poolWrapperStyle: CSSProperties = {
-  backgroundColor: '#ffffff',
-  borderRadius: '16px',
-  border: '1px solid #e2e8f0',
-  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02)',
-  padding: '6px',
-  overflow: 'hidden',
-  width: '100%',
-  boxSizing: 'border-box'
-};
 
 export default App;

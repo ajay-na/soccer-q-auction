@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { useTheme } from './theme/ThemeContext';
 import type { SheetRow } from './types';
 
 interface GoogleSheetFetcherProps {
@@ -9,6 +10,7 @@ interface GoogleSheetFetcherProps {
 }
 
 function GoogleSheetFetcher({ apiKey, spreadsheetId, range, children }: GoogleSheetFetcherProps) {
+  const { colors } = useTheme();
   const [data, setData] = useState<SheetRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +48,7 @@ function GoogleSheetFetcher({ apiKey, spreadsheetId, range, children }: GoogleSh
 
   if (loading) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center', color: '#4b5563' }}>
+      <div style={{ padding: '20px', textAlign: 'center', color: colors.loadingColor }}>
         ⏳ Loading Live Auction Data...
       </div>
     );
@@ -54,9 +56,15 @@ function GoogleSheetFetcher({ apiKey, spreadsheetId, range, children }: GoogleSh
 
   if (error) {
     return (
-      <div style={{ padding: '20px', color: '#dc2626', backgroundColor: '#fef2f2', borderRadius: '8px', border: '1px solid #fee2e2' }}>
+      <div style={{
+        padding: '20px',
+        color: colors.errorColor,
+        backgroundColor: colors.errorBg,
+        borderRadius: '8px',
+        border: `1px solid ${colors.errorBorder}`,
+      }}>
         <strong>⚠️ Auction Sync Error:</strong> {error}
-        <p style={{ fontSize: '12px', marginTop: '5px', color: '#991b1b' }}>
+        <p style={{ fontSize: '12px', marginTop: '5px', color: colors.errorSubtext }}>
           Please verify your API key, spreadsheet permissions, and tab range settings.
         </p>
       </div>
