@@ -27,10 +27,27 @@ function App() {
       {/* 🎛️ Stacking Dashboard Layout */}
       <div style={mainLayoutStackStyle}>
         
-        {/* 👥 TOP SECTION: Team Squads Grid (2 Columns on Desktop -> Vertical Stack on Mobile) */}
+        {/* 👥 TOP SECTION: Team Squads Grid (Strict 2x2 on Desktop -> 1 Column Stack on Mobile) */}
         <div style={sectionStyle}>
           <h2 style={sectionTitleStyle}>👥 Team Squads Status</h2>
-          <div style={teamsGridStyle}>
+          
+          {/* ⚡ Injecting media queries via a dynamic style block to lock the 2x2 grid layout */}
+          <style>{`
+            .teams-grid-container {
+              display: grid;
+              grid-template-columns: 1fr; /* Default to single column vertical stack on mobile */
+              gap: 24px;
+              width: 100%;
+              box-sizing: border-box;
+            }
+            @media (min-width: 768px) {
+              .teams-grid-container {
+                grid-template-columns: 1fr 1fr; /* Locks strictly into a 2x2 grid layout on tablet/desktop */
+              }
+            }
+          `}</style>
+
+          <div className="teams-grid-container">
             {teamsConfig.map((team, index) => (
               <GoogleSheetFetcher 
                 key={index}
@@ -73,13 +90,12 @@ function App() {
 // 🎨 CORE THEME DESIGN STYLES
 
 const appContainerStyle: CSSProperties = {
-  // ⚡ Mobile-first safe padding adjustment to prevent edge-bleeding
   padding: '40px 16px', 
   fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   backgroundColor: '#f8fafc', 
   minHeight: '100vh',
   color: '#0f172a',
-  boxSizing: 'border-box' // Forces paddings inside the layout track
+  boxSizing: 'border-box' 
 };
 
 const headerStyle: CSSProperties = {
@@ -148,16 +164,6 @@ const sectionTitleStyle = {
   paddingLeft: '12px'
 };
 
-// ⚡ RESPONSIVE ENGINE: Strict 2 Columns on Desktop, cleanly drops to a single line vertical stack on Mobile
-const teamsGridStyle: CSSProperties = {
-  display: 'grid',
-  // auto-fit + minmax(340px) forces 2 columns if space permits, but wraps layout elements into a clean 1-column list on mobile viewports
-  gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', 
-  gap: '24px',
-  width: '100%',
-  boxSizing: 'border-box'
-};
-
 const dividerStyle = {
   border: '0',
   height: '1px',
@@ -184,7 +190,6 @@ const poolNoticeStyle = {
   whiteSpace: 'nowrap'
 };
 
-// Wrapper ensuring the bottom table stretches beautifully 
 const poolWrapperStyle: CSSProperties = {
   backgroundColor: '#ffffff',
   borderRadius: '16px',
