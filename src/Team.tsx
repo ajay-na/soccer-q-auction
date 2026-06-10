@@ -1,5 +1,12 @@
+import type { CSSProperties } from 'react';
+import type { SheetRow } from './types';
 
-export function SingleTeamCard({ teamName, rows }) {
+interface SingleTeamCardProps {
+  teamName: string;
+  rows: SheetRow[];
+}
+
+export function SingleTeamCard({ teamName, rows }: SingleTeamCardProps) {
   const TOTAL_BUDGET = 400;
   const MIN_PLAYERS = 8;
   const MIN_PLAYER_BASE_PRICE = 25; // Base price reserved per remaining squad slot
@@ -19,7 +26,7 @@ export function SingleTeamCard({ teamName, rows }) {
   const currentPlayerCount = teamPlayers.length;
 
   // 💰 SAFE MATH LOGIC
-  const current_spend = teamPlayers.reduce((acc, player) => {
+  const current_spend = teamPlayers.reduce((acc: number, player: SheetRow) => {
     const price = player[5] ? parseFloat(player[5].toString().replace(/[^0-9.]/g, '')) : 0;
     return acc + price;
   }, 0);
@@ -114,7 +121,7 @@ const titleStyle = {
   letterSpacing: '-0.025em'
 };
 
-const squadCountBadgeStyle = (isComplete) => ({
+const squadCountBadgeStyle = (isComplete: boolean): CSSProperties => ({
   fontSize: '13px',
   fontWeight: '600',
   padding: '6px 12px',
@@ -133,7 +140,7 @@ const dashboardGridStyle = {
   width: '100%'
 };
 
-const metricBoxStyle = (textColor, bgColor) => ({
+const metricBoxStyle = (textColor: string, bgColor: string): CSSProperties => ({
   padding: '10px 4px', // Optimized vertical padding, safe horizontal inset
   borderRadius: '10px',
   backgroundColor: bgColor,
@@ -147,7 +154,7 @@ const metricBoxStyle = (textColor, bgColor) => ({
   boxSizing: 'border-box'
 });
 
-const metricLabelStyle = {
+const metricLabelStyle: CSSProperties = {
   fontSize: '10px', // Uniform subtle typography scale for responsive displays
   fontWeight: '700',
   textTransform: 'uppercase',
@@ -167,14 +174,14 @@ const metricValueStyle = {
   letterSpacing: '-0.025em'
 };
 
-const tableContainerStyle = {
+const tableContainerStyle: CSSProperties = {
   maxHeight: '260px',
   overflowY: 'auto',
   border: '1px solid #e5e7eb',
   borderRadius: '8px'
 };
 
-const thRowStyle = {
+const thRowStyle: CSSProperties = {
   backgroundColor: '#f9fafb',
   position: 'sticky',
   top: 0,
@@ -191,7 +198,7 @@ const thStyle = {
   letterSpacing: '0.05em'
 };
 
-const trStyle = (index) => ({
+const trStyle = (index: number): CSSProperties => ({
   backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafb',
   borderBottom: '1px solid #f3f4f6',
   transition: 'background-color 0.2s ease'
@@ -204,7 +211,7 @@ const tdStyle = {
   verticalAlign: 'middle'
 };
 
-const emptyStateStyle = {
+const emptyStateStyle: CSSProperties = {
   padding: '30px',
   textAlign: 'center',
   color: '#9ca3af',

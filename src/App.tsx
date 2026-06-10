@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { AvailablePlayers } from './AvailablePlayers';
 import GoogleSheetFetcher from './GoogleSheetFetcher';
 import SingleTeamCard from './Team';
@@ -71,7 +72,7 @@ function App() {
 
 // 🎨 CORE THEME DESIGN STYLES
 
-const appContainerStyle = {
+const appContainerStyle: CSSProperties = {
   // ⚡ Mobile-first safe padding adjustment to prevent edge-bleeding
   padding: '40px 16px', 
   fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -81,7 +82,7 @@ const appContainerStyle = {
   boxSizing: 'border-box' // Forces paddings inside the layout track
 };
 
-const headerStyle = {
+const headerStyle: CSSProperties = {
   textAlign: 'center',
   marginBottom: '36px',
   display: 'flex',
@@ -121,7 +122,7 @@ const titleStyle = {
 };
 
 // Vertical Layout Stack Wrapper
-const mainLayoutStackStyle = {
+const mainLayoutStackStyle: CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   gap: '32px',
@@ -130,7 +131,7 @@ const mainLayoutStackStyle = {
   width: '100%'
 };
 
-const sectionStyle = {
+const sectionStyle: CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   gap: '20px',
@@ -148,7 +149,7 @@ const sectionTitleStyle = {
 };
 
 // ⚡ RESPONSIVE ENGINE: Strict 2 Columns on Desktop, cleanly drops to a single line vertical stack on Mobile
-const teamsGridStyle = {
+const teamsGridStyle: CSSProperties = {
   display: 'grid',
   // auto-fit + minmax(340px) forces 2 columns if space permits, but wraps layout elements into a clean 1-column list on mobile viewports
   gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', 
@@ -184,7 +185,7 @@ const poolNoticeStyle = {
 };
 
 // Wrapper ensuring the bottom table stretches beautifully 
-const poolWrapperStyle = {
+const poolWrapperStyle: CSSProperties = {
   backgroundColor: '#ffffff',
   borderRadius: '16px',
   border: '1px solid #e2e8f0',

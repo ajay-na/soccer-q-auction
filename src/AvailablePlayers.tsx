@@ -1,5 +1,11 @@
+import type { CSSProperties } from 'react';
+import type { SheetRow } from './types';
 
-export function AvailablePlayers({ rows }) {
+interface AvailablePlayersProps {
+  rows: SheetRow[];
+}
+
+export function AvailablePlayers({ rows }: AvailablePlayersProps) {
   if (!rows || rows.length === 0) {
     return (
       <div style={cardStyle}>
@@ -13,7 +19,7 @@ export function AvailablePlayers({ rows }) {
   
   // 🏏 FILTER LOGIC: Match case-insensitive "sold" status 
   const availablePlayers = allPlayers.filter(
-    player => player[6] && player[6].toString().toLowerCase() !== "sold"
+    (player: SheetRow) => player[6] && player[6].toString().toLowerCase() !== "sold"
   );
 
   return (
@@ -97,7 +103,7 @@ const tableContainerStyle = {
   borderRadius: '8px'
 };
 
-const thRowStyle = {
+const thRowStyle: CSSProperties = {
   backgroundColor: '#f9fafb',
   position: 'sticky',
   top: 0,
@@ -114,7 +120,7 @@ const thStyle = {
   letterSpacing: '0.05em'
 };
 
-const trStyle = (index) => ({
+const trStyle = (index: number): CSSProperties => ({
   backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafb',
   borderBottom: '1px solid #f3f4f6',
   transition: 'background-color 0.2s ease'
@@ -127,7 +133,7 @@ const tdStyle = {
   verticalAlign: 'middle',
 };
 
-const emptyStateStyle = {
+const emptyStateStyle: CSSProperties = {
   padding: '40px',
   textAlign: 'center',
   color: '#9ca3af',

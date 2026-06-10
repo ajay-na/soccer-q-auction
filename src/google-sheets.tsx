@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
+import type { SheetRow } from './types';
 
 function GoogleSheetReader({API_KEY, SPREADSHEET_ID, RANGE}: {API_KEY: string | undefined, SPREADSHEET_ID: string | undefined, RANGE: string | undefined}) {
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState<SheetRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
 
   useEffect(() => {
@@ -21,7 +22,7 @@ function GoogleSheetReader({API_KEY, SPREADSHEET_ID, RANGE}: {API_KEY: string | 
         setLoading(false);
       } catch (err) {
         console.error("Error fetching sheets data:", err);
-        setError(err.message);
+        setError(err instanceof Error ? err.message : 'Unknown error');
         setLoading(false);
       }
     };

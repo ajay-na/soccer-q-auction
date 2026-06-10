@@ -1,47 +1,49 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+import type { SheetRow } from './types';
 
-function GoogleSheetFetcher({ apiKey, spreadsheetId, range, children }) {
-  const [data, setData] = useState([]);
+interface GoogleSheetFetcherProps {
+  apiKey: string | undefined;
+  spreadsheetId: string | undefined;
+  range: string;
+  children: (data: SheetRow[]) => ReactNode;
+}
+
+function GoogleSheetFetcher({ apiKey, spreadsheetId, range, children }: GoogleSheetFetcherProps) {
+  const [data, setData] = useState<SheetRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // 1. Guard clause: Don't run if vital keys are missing
     if (!apiKey || !spreadsheetId || !range) return;
 
     const fetchSheetData = async () => {
       const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
-      
+
       try {
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`Google API Error! Status: ${response.status}`);
         }
         const result = await response.json();
-        
-        // Google Sheets API returns raw rows inside a "values" array
+
         setData(result.values || []);
-        setError(null); // Clear any previous errors if it recovers
+        setError(null);
       } catch (err) {
         console.error("Error fetching live auction data:", err);
-        setError(err.message);
+        setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {
         setLoading(false);
       }
     };
 
-    // 2. Fetch data immediately on component load
-    fetchSheetData(); 
-    
-    // 3. ⚡ Live Auction Sync: Pull fresh data from Google Sheets every 3 seconds
-    const interval = setInterval(fetchSheetData, 30000); 
+    fetchSheetData();
 
-    // 4. Cleanup: Clear the timer when the user closes/leaves the page
-    return () => clearInterval(interval); 
+    const interval = setInterval(fetchSheetData, 30000);
+
+    return () => clearInterval(interval);
 
   }, [apiKey, spreadsheetId, range]);
 
-  // 5. Render States
   if (loading) {
     return (
       <div style={{ padding: '20px', textAlign: 'center', color: '#4b5563' }}>
@@ -61,7 +63,6 @@ function GoogleSheetFetcher({ apiKey, spreadsheetId, range, children }) {
     );
   }
 
-  // 6. Return the raw data arrays back up to your UI components using render props
   return children(data);
 }
 
